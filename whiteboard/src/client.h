@@ -9,10 +9,6 @@
 
 #pragma comment(lib, "ws2_32.lib") // Automatically link the Winsock library
 
-/*struct packet {
-	uint_8 type; //0x01 for connect, 0x02 for disconnect, 0x03 for session end, 0x04 for client update, 0x05 for whiteboard command, 0x06 for whiteboard mask, 0x07 for whiteboard color
-	char[] payload;
-};*/
 
 //custom equality operator for sockaddr_in
 inline bool operator==(const sockaddr_in& a, const sockaddr_in& b) {
@@ -30,7 +26,7 @@ class client : public WhiteBoard {
 		~client();
 		void receive();
 		void handlePacket(uint8_t type);
-		void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc);
+		//void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc);
 
 
 		//void updateWhiteboard();

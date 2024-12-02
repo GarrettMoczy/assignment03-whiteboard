@@ -1,5 +1,8 @@
 #include "whiteboard.h"
 
+WhiteBoard::WhiteBoard() {
+
+}
 
 WhiteBoard::WhiteBoard(float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], float drawnBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], bool mask[WINDOW_HEIGHT][WINDOW_WIDTH],
     GLFWwindow* window) {

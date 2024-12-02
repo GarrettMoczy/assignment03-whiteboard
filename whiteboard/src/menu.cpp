@@ -1,6 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // Include the stb_image library
 #include "Menu.h"
+#include "server.h"
 #include <iostream>
 
 Menu::Menu(GLFWwindow* window, float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], const std::string& imagePath) {
@@ -37,12 +38,12 @@ void Menu::Display() {
             for (int x = 0; x < WINDOW_WIDTH; ++x) {
                 int index = (y * imgWidth + x) * 3; // 3 channels per pixel (RGB)
 
-                 // Set the pixel in the framebuffer using the data array values
+                // Set the pixel in the framebuffer using the data array values
                 float red = data[index] / 255.0f;
                 float green = data[index + 1] / 255.0f;
                 float blue = data[index + 2] / 255.0f;
 
-                SetFrameBufferPixel(x, y, {red, green, blue});
+                SetFrameBufferPixel(x, y, { red, green, blue });
             }
         }
     }
@@ -55,7 +56,7 @@ void Menu::Display() {
 }
 void Menu::CharacterCallback(GLFWwindow* lWindow, unsigned int key)
 {
-    system("cls");  // Clear the console
+    //system("cls");  // Clear the console
 
     // Check if the key is a number, dot, or semicolon
     if ((key >= '0' && key <= '9') || key == '.' || key == ':') {
@@ -79,7 +80,7 @@ void Menu::KeyCallback(GLFWwindow* lWindow, int key, int scancode, int action, i
 
     // Handle the Backspace key (GLFW_KEY_BACKSPACE)
     if (action == GLFW_PRESS && key == GLFW_KEY_BACKSPACE) {
-        system("cls");  // Clear the console
+        //system("cls");  // Clear the console
         // Remove the last character from the password string, if it exists
         if (!password.empty()) {
             password.pop_back();
@@ -112,9 +113,8 @@ void Menu::CursorPositionCallback(GLFWwindow* lWindow, double xpos, double ypos)
         if (isMousePressed) {
             // Check if the mouse was released at the same position
             if (hostPress(framebufferX, framebufferY) && hostPress(pressX, pressY)) {
-            
-                // Call the function you want to trigger
                 
+
             }
             else if (joinPress(framebufferX, framebufferY) && joinPress(pressX, pressY)) {
                 // Call the function you want to trigger
