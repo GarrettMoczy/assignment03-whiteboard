@@ -59,8 +59,8 @@ void Menu::Display() {
 }
 void Menu::CharacterCallback(GLFWwindow* lWindow, unsigned int key)
 {
-    system("cls");  // Clear the console
-
+    //system("cls");  // Clear the console
+   
     // Check if the key is a number, dot, or semicolon
     if ((key >= '0' && key <= '9') || key == '.' || key == ':') {
         // Append the character to the password string

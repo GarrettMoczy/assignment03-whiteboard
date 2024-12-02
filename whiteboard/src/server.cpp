@@ -1,28 +1,5 @@
 #include "server.h"
 
-void Init(GLFWwindow* window) {
-    if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW.\n";
-        exit(1);
-    }
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GL_FALSE);
-
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Whiteboard Server", NULL, NULL);
-    if (!window) {
-        std::cerr << "Failed to create GLFW window.\n";
-        glfwTerminate();
-        exit(1);
-    }
-    glfwMakeContextCurrent(window);
-    glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "Failed to initialize GLEW.\n";
-        exit(1);
-    }
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-}
-
 server::server() {
     // Initialize Winsock
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
@@ -52,15 +29,6 @@ server::server() {
     std::cout << "Server started on port 8080.\n";
 }
 
-
-void Bind(GLFWwindow* window, WhiteBoard& whiteboard) {
-    glfwSetWindowUserPointer(window, &whiteboard);
-    glfwSetMouseButtonCallback(window, WhiteBoard::StaticMouseCallback);
-    glfwSetCursorPosCallback(window, WhiteBoard::StaticCursorPositionCallback);
-    glfwSetCharCallback(window, WhiteBoard::StaticCharacterCallback);
-    whiteboard.SetFrameBuffer();
-    whiteboard.ClearMaskData();
-}
 
 server::server(float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3],
     float drawnBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3],
@@ -92,15 +60,10 @@ server::server(float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3],
         exit(1);
     }
 
-    std::cout << "Server started on port 8080.\n";
+    std::cout << "Server started on port .\n";
 }
 
 void server::Start() {
-    GLFWwindow* tempWindow = whiteboard.GetWindow();
-    Init(tempWindow);
-    whiteboard.SetWindow(tempWindow);
-    Bind(whiteboard.GetWindow(), whiteboard); 
-
     std::thread renderThread([this]() {
         while (!glfwWindowShouldClose(whiteboard.GetWindow())) {
             glClear(GL_COLOR_BUFFER_BIT);
@@ -116,20 +79,20 @@ void server::Start() {
 }
 
 
-void server::sendPacket(uint8_t type, const std::vector<char>& payload, const sockaddr_in& client) {
-    std::vector<char> packet;
-    packet.push_back(static_cast<char>(type));
-    packet.insert(packet.end(), payload.begin(), payload.end()); 
-
-    int result = sendto(sock, packet.data(), packet.size(), 0, (sockaddr*)&client, sizeof(client));
-    if (result == SOCKET_ERROR) {
-        std::cerr << "Failed to send packet to " << inet_ntoa(client.sin_addr)
-            << ". Error: " << WSAGetLastError() << "\n";
-    }
-    else {
-        std::cout << "Packet sent to " << inet_ntoa(client.sin_addr) << "\n";
-    }
-}
+//void server::sendPacket(uint8_t type, const std::vector<char>& payload, const sockaddr_in& client) {
+//    std::vector<char> packet;
+//    packet.push_back(static_cast<char>(type));
+//    packet.insert(packet.end(), payload.begin(), payload.end()); 
+//
+//    int result = sendto(sock, packet.data(), packet.size(), 0, (sockaddr*)&client, sizeof(client));
+//    if (result == SOCKET_ERROR) {
+//        std::cerr << "Failed to send packet to " << inet_ntoa(client.sin_addr)
+//            << ". Error: " << WSAGetLastError() << "\n";
+//    }
+//    else {
+//        std::cout << "Packet sent to " << inet_ntoa(client.sin_addr) << "\n";
+//    }
+//}
 
 
 server::~server() {
