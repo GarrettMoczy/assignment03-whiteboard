@@ -54,7 +54,7 @@ void Bind(Menu menu) {
 }
 
 int main() {
-    WhiteBoard whiteboard(frameBuffer, drawnBuffer, mask, window);
+    WhiteBoard* whiteboard;
     Menu menu(window, frameBuffer, "../img/alt_menu_texture.png");
 
     Init();
@@ -66,10 +66,17 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    Bind(whiteboard);
+    
+    if (menu.server) {
+        whiteboard = new server(frameBuffer, drawnBuffer, mask, window);
+    } else {
+        whiteboard = new client(menu.password, frameBuffer, drawnBuffer, mask, window);
+    }
+
+    Bind(*whiteboard);
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
-        whiteboard.Display();
+        whiteboard->Display();
         glFlush();
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -20,7 +20,7 @@ private:
     GLFWwindow* window;
     float(*frameBuffer)[WINDOW_WIDTH][3];
     void SetFrameBufferPixel(int x, int y, struct color lc);
-    std::string password;
+    
 public:
     Menu(GLFWwindow* window, float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], const std::string& imagePath);
     void Display();
@@ -35,4 +35,6 @@ public:
     bool isActive();
     void setInactive();
     bool active;
+    bool server;
+    std::string password;
 };

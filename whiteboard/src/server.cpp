@@ -66,7 +66,7 @@ server::server(float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3],
     float drawnBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3],
     bool mask[WINDOW_HEIGHT][WINDOW_WIDTH],
     GLFWwindow* window)
-    : whiteboard(frameBuffer, drawnBuffer, mask, window) {
+    : WhiteBoard(frameBuffer, drawnBuffer, mask, window) {
     // Initialize Winsock
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         std::cerr << "Winsock initialization failed. Error: " << WSAGetLastError() << "\n";

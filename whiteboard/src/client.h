@@ -24,11 +24,11 @@ inline bool operator==(const sockaddr_in& a, const sockaddr_in& b) {
 }
 
 
-class client : public WhiteBoard {
+class client : virtual public WhiteBoard {
 
 	public:
 		client();
-		client(std::string serverIP);
+		client(std::string serverIP, float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], float drawnBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], bool mask[WINDOW_HEIGHT][WINDOW_WIDTH], GLFWwindow* window);
 		~client();
 		void receive();
 		void handlePacket(uint8_t type);

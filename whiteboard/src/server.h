@@ -6,10 +6,11 @@
 #include <iostream>
 #include <thread>
 #include "whiteboard.h"
+#include "client.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
-class server : public WhiteBoard {
+class server : public client {
 public:
     server();
     server(float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3],

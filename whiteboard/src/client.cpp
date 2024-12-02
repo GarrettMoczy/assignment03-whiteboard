@@ -4,7 +4,7 @@
 client::client() {
 
 }
-client::client(std::string serverIP) : running(true), readBuff(1024, 0) {
+client::client(std::string serverIP, float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], float drawnBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], bool mask[WINDOW_HEIGHT][WINDOW_WIDTH], GLFWwindow* window) : running(true), readBuff(1024, 0), WhiteBoard(frameBuffer, drawnBuffer, mask, window){
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         std::cerr << "Winsock initialization failed. Error: " << WSAGetLastError() << std::endl;
         running = false;
