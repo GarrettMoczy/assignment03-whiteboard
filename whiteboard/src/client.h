@@ -27,10 +27,9 @@ class client : public WhiteBoard {
 	public:
 		client(std::string serverIP);
 		~client();
-		void send();
 		void receive();
 		void handlePacket(uint8_t type);
-		void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc) override;
+		void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc);
 
 
 		//void updateWhiteboard();

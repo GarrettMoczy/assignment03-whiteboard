@@ -22,29 +22,14 @@ client::client(std::string serverIP) : running(true), readBuff(1024, 0) {
         std::cerr << "Invalid server IP address: " << serverIP << std::endl;
         running = false;
     }
+
+    sendPacket((uint8_t)1, {}, serverAddr); //initial connection packet
 }
 
 client::~client() {
     running = false;
     closesocket(sock);
     WSACleanup();
-}
-
-void client::send() {
-    while (running) {
-        //initial connection packet
-        sendPacket((uint8_t)1, {}, serverAddr);
-        
-
-        if (input == "q") {
-            running = false;
-            sendPacket(0x03, {}, serverAddr); // Disconnect packet
-        }
-        else if (input == "whiteboard") {
-            std::vector<char> payload{ 'W', 'B', 'U', 'P', 'D' }; // Example payload
-            sendPacket(0x05, payload, serverAddr);
-        }
-    }
 }
 
 void client::receive() {
@@ -103,6 +88,7 @@ void client::handlePacket(uint8_t type) {
         case 0x05: // Update whiteboard
             struct drawArgs args;
             std::memcpy(&args, readBuff.data(), readBuff.size());
+            WhiteBoard::DrawSquare(args.xpos, args.ypos, args.xend, args.yend, args.size, args.lc);
             break;
     }
 }
