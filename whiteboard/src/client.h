@@ -30,6 +30,7 @@ class client{
 		struct color lc;
 	};
 	public:
+		client();
 		client(std::string serverIP);
 		~client();
 		void send();
@@ -44,7 +45,7 @@ class client{
 		sockaddr_in serverAddr;
 
 		void sendPacket(unsigned int type, const std::vector<char>& payload, const sockaddr_in& recipient);
-
+		
 		bool running;
 		std::vector<char> readBuff;
 		std::vector<sockaddr_in> clientIPs; //list of each clients IP for transmission to clients

@@ -3,11 +3,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "whiteboard.h"
-
 #include "menu.h"
 #include "server.h"
 #include "client.h"
-=======
 
 #define WINDOW_WIDTH 900
 #define WINDOW_HEIGHT 600
@@ -17,21 +15,30 @@ float drawnBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3];
 bool mask[WINDOW_HEIGHT][WINDOW_WIDTH];
 GLFWwindow* window;
 
-void Init()
-{
-    glfwInit();
+void Init() {
+    if (!glfwInit()) {
+        std::cerr << "Failed to initialize GLFW.\n";
+        exit(1);
+    }
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GL_FALSE);
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Assignment 03 - OpenGL Whiteboard", NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Whiteboard App", NULL, NULL);
+    if (!window) {
+        std::cerr << "Failed to create GLFW window.\n";
+        glfwTerminate();
+        exit(1);
+    }
     glfwMakeContextCurrent(window);
     glewExperimental = GL_TRUE;
-    glewInit();
+    if (glewInit() != GLEW_OK) {
+        std::cerr << "Failed to initialize GLEW.\n";
+        glfwTerminate();
+        exit(1);
+    }
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-
 }
 
-void Bind(WhiteBoard whiteboard) {
+void Bind(WhiteBoard& whiteboard) {
     glfwSetWindowUserPointer(window, &whiteboard);
     glfwSetMouseButtonCallback(window, WhiteBoard::StaticMouseCallback);
     glfwSetCursorPosCallback(window, WhiteBoard::StaticCursorPositionCallback);
@@ -40,20 +47,32 @@ void Bind(WhiteBoard whiteboard) {
     whiteboard.ClearMaskData();
 }
 
-int main()
-{
-    WhiteBoard whiteboard(frameBuffer, drawnBuffer, mask, window);
-    Menu menu(window, frameBuffer, "../img/alt_menu_texture.png");
+int main() {
     Init();
 
-    while (true)
-    {
+    WhiteBoard whiteboard(frameBuffer, drawnBuffer, mask, window);
+    Menu menu(window, frameBuffer, "../img/alt_menu_texture.png");
+
+
+    while (true) {
         menu.Display();
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            std::cout << "Starting as server...\n";
+            server srv(frameBuffer, drawnBuffer, mask, window);
+            srv.Start(); 
+            break;
+        }
+        else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+            std::cout << "Exiting application...\n";
+            glfwTerminate();
+            return 0;
+        }
     }
     Bind(whiteboard);
-    while (glfwWindowShouldClose(window) == 0) {
+    while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         whiteboard.Display();
         glFlush();
