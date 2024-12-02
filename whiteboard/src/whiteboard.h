@@ -31,12 +31,12 @@ class WhiteBoard {
 		static void StaticCharacterCallback(GLFWwindow* lWindow, unsigned int key);
 
 	protected:
+
 		struct color { float r, g, b; };
 		void WhiteBoard::SetWindow(GLFWwindow* win) {window = win;  }
 		GLFWwindow* GetWindow() const { return window; }
 		bool (*GetMask())[WINDOW_WIDTH] { return mask; }
 		float (*GetDrawnBuffer())[WINDOW_WIDTH][3]{ return drawnBuffer; }
-
 		bool line;
 		bool isMousePressed;
 		int startX, startY;

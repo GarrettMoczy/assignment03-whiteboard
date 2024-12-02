@@ -36,7 +36,7 @@ client::~client() {
     WSACleanup();
 }
 
-void client::send() {
+//void client::send() {
     //while (running) {
     //    //initial connection packet
     //    sendPacket((uint8_t)1, {}, serverAddr);
@@ -51,7 +51,7 @@ void client::send() {
     //        sendPacket(0x05, payload, serverAddr);
     //    }
     //}
-}
+//}
 
 void client::receive() {
     while (running) {
