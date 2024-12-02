@@ -7,6 +7,7 @@ Menu::Menu(GLFWwindow* window, float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3]
     img = imagePath;
     this->frameBuffer = frameBuffer;
     this->window = window;
+    active = true;
 }
 
 void Menu::SetFrameBufferPixel(int x, int y, struct color lc)
@@ -18,7 +19,9 @@ void Menu::SetFrameBufferPixel(int x, int y, struct color lc)
     frameBuffer[y][x][1] = lc.g;
     frameBuffer[y][x][2] = lc.b;
 };
-
+void Menu::setInactive() {
+    active = false;
+}
 bool Menu::hostPress(int xpos, int ypos) {
     return (xpos <= 290 && xpos >= 250) && (ypos <= 540 && ypos >= 350);
 
@@ -112,14 +115,17 @@ void Menu::CursorPositionCallback(GLFWwindow* lWindow, double xpos, double ypos)
         if (isMousePressed) {
             // Check if the mouse was released at the same position
             if (hostPress(framebufferX, framebufferY) && hostPress(pressX, pressY)) {
-            
                 // Call the function you want to trigger
-                
+                printf("pressed: host\n");
+                this->active = false;
             }
             else if (joinPress(framebufferX, framebufferY) && joinPress(pressX, pressY)) {
                 // Call the function you want to trigger
+                printf("pressed: join\n");
+                this->active = false;
             }
             isMousePressed = false;
+            printf("Active state updated: %d\n", active);
         }
     }
 }
@@ -150,4 +156,8 @@ void Menu::StaticCharacterCallback(GLFWwindow* lWindow, unsigned int key) {
     if (menu) {
         menu->CharacterCallback(lWindow, key);
     }
+}
+
+bool Menu::isActive() {
+    return active;
 }

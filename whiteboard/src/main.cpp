@@ -39,20 +39,21 @@ void Bind(WhiteBoard whiteboard) {
 }
 void Bind(Menu menu) {
     glfwSetWindowUserPointer(window, &menu);
-    glfwSetCursorPosCallback(window, Menu::StaticCursorPositionCallback);
     glfwSetCharCallback(window, Menu::StaticCharacterCallback);
     glfwSetKeyCallback(window, Menu::StaticKeyCallback);
+    glfwSetCursorPosCallback(window, Menu::StaticCursorPositionCallback);
 }
 
 int main()
 {
     WhiteBoard whiteboard(frameBuffer, drawnBuffer, mask, window);
     Menu menu(window, frameBuffer, "../img/alt_menu_texture.png");
-   
+    
     Init();
     Bind(menu);
-    while (glfwWindowShouldClose(window) == 0)
+    while (glfwWindowShouldClose(window) == 0 && menu.isActive())
     {
+        glfwSetWindowUserPointer(window, &menu);
         menu.Display();
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -65,7 +66,6 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
     glfwTerminate();
     return 0;
 }
