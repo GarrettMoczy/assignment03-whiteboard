@@ -8,11 +8,13 @@
 #include "whiteboard.h"
 
 #pragma comment(lib, "ws2_32.lib") // Automatically link the Winsock library
+#pragma pack(push, 1)
+struct drawArgs {
+	int xpos, ypos, xend, yend, size;
+	struct color lc;
+};
+#pragma pack(pop)
 
-/*struct packet {
-	uint_8 type; //0x01 for connect, 0x02 for disconnect, 0x03 for session end, 0x04 for client update, 0x05 for whiteboard command, 0x06 for whiteboard mask, 0x07 for whiteboard color
-	char[] payload;
-};*/
 
 //custom equality operator for sockaddr_in
 inline bool operator==(const sockaddr_in& a, const sockaddr_in& b) {
@@ -22,29 +24,28 @@ inline bool operator==(const sockaddr_in& a, const sockaddr_in& b) {
 }
 
 
-class client{
-	struct color { float r, g, b; };
+class client : public WhiteBoard {
 
-	struct drawArgs {
-		int xpos, ypos, xend, yend, size;
-		struct color lc;
-	};
 	public:
+		client();
 		client(std::string serverIP);
 		~client();
-		void send();
 		void receive();
 		void handlePacket(uint8_t type);
+		//void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc);
+		void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc) override;
+
 		//void updateWhiteboard();
 
 	protected:
+		
 		WSADATA wsaData;
 		SOCKET sock;
 
 		sockaddr_in serverAddr;
 
 		void sendPacket(unsigned int type, const std::vector<char>& payload, const sockaddr_in& recipient);
-
+		
 		bool running;
 		std::vector<char> readBuff;
 		std::vector<sockaddr_in> clientIPs; //list of each clients IP for transmission to clients

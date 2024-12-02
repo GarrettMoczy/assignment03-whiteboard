@@ -3,9 +3,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "whiteboard.h"
-
 #include "menu.h"
-
+#include "server.h"
+#include "client.h"
 
 #define WINDOW_WIDTH 900
 #define WINDOW_HEIGHT 600
@@ -15,21 +15,30 @@ float drawnBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3];
 bool mask[WINDOW_HEIGHT][WINDOW_WIDTH];
 GLFWwindow* window;
 
-void Init()
-{
-    glfwInit();
+void Init() {
+    if (!glfwInit()) {
+        std::cerr << "Failed to initialize GLFW.\n";
+        exit(1);
+    }
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GL_FALSE);
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Assignment 03 - OpenGL Whiteboard", NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Whiteboard App", NULL, NULL);
+    if (!window) {
+        std::cerr << "Failed to create GLFW window.\n";
+        glfwTerminate();
+        exit(1);
+    }
     glfwMakeContextCurrent(window);
     glewExperimental = GL_TRUE;
-    glewInit();
+    if (glewInit() != GLEW_OK) {
+        std::cerr << "Failed to initialize GLEW.\n";
+        glfwTerminate();
+        exit(1);
+    }
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-
 }
 
-void Bind(WhiteBoard whiteboard) {
+void Bind(WhiteBoard& whiteboard) {
     glfwSetWindowUserPointer(window, &whiteboard);
     glfwSetMouseButtonCallback(window, WhiteBoard::StaticMouseCallback);
     glfwSetCursorPosCallback(window, WhiteBoard::StaticCursorPositionCallback);
@@ -44,11 +53,10 @@ void Bind(Menu menu) {
     glfwSetCursorPosCallback(window, Menu::StaticCursorPositionCallback);
 }
 
-int main()
-{
+int main() {
     WhiteBoard whiteboard(frameBuffer, drawnBuffer, mask, window);
     Menu menu(window, frameBuffer, "../img/alt_menu_texture.png");
-    
+
     Init();
     Bind(menu);
     while (glfwWindowShouldClose(window) == 0 && menu.isActive())
@@ -59,7 +67,7 @@ int main()
         glfwPollEvents();
     }
     Bind(whiteboard);
-    while (glfwWindowShouldClose(window) == 0) {
+    while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         whiteboard.Display();
         glFlush();
