@@ -32,5 +32,7 @@ public:
     static void StaticCursorPositionCallback(GLFWwindow* lWindow, double xpos, double ypos);
     bool hostPress(int xpos, int ypos);
     bool joinPress(int xpos, int ypos);
-
+    bool isActive();
+    void setInactive();
+    bool active;
 };
