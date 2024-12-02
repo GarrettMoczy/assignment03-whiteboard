@@ -22,22 +22,29 @@ inline bool operator==(const sockaddr_in& a, const sockaddr_in& b) {
 }
 
 
-class client{
-	struct color { float r, g, b; };
+class client : public WhiteBoard {
 
-	struct drawArgs {
-		int xpos, ypos, xend, yend, size;
-		struct color lc;
-	};
 	public:
 		client(std::string serverIP);
 		~client();
 		void send();
 		void receive();
 		void handlePacket(uint8_t type);
+		void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc) override;
+
+
 		//void updateWhiteboard();
 
 	protected:
+#pragma pack(push, 1)
+		struct drawArgs {
+			int xpos, ypos, xend, yend, size;
+			struct color lc;
+		};
+		struct color {
+			float r, g, b;
+		};
+#pragma pack(pop)
 		WSADATA wsaData;
 		SOCKET sock;
 

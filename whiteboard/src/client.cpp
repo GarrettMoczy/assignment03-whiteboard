@@ -55,33 +55,55 @@ void client::receive() {
         int bytesReceived = recvfrom(sock, readBuff.data(), readBuff.size(), 0, (sockaddr*)&from, &fromSize);
         if (bytesReceived > 0) {
             uint8_t type = readBuff[0];
+            readBuff.erase(readBuff.begin());
             handlePacket(type);
         }
     }
 }
 
+void client::DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc) override {
+    WhiteBoard::DrawSquare(xpos, ypos, xend, yend, size, lc);
+    struct drawArgs args;
+    args.xpos = xpos;
+    args.ypos = ypos;
+    args.xend = xend;
+    args.yend = yend;
+    args.size = size;
+    args.lc.r = lc.r;
+    args.lc.g = lc.g;
+    args.lc.b = lc.b;
+    std::vector<char> packet;
+    packet.resize(sizeof(struct drawArgs));
+    std::memcpy(packet.data(), &args, sizeof(struct drawArgs));
+    for (auto ip : clientIPs) {
+        sendPacket((uint8_t)5, packet, ip);
+    }
+    
+}
+
+
 void client::handlePacket(uint8_t type) {
     switch (type) {
-    case 0x03: // Disconnect
-        running = false; // Stop threads
-        break;
-    case 0x04: { // Update client list
-        clientIPs.clear();
-        const char* data = readBuff.data() + 1; // Skip packet type
-        while (*data) {
-            sockaddr_in addr = {};
-            if (inet_pton(AF_INET, data, &addr.sin_addr) > 0) {
-                addr.sin_family = AF_INET;
-                addr.sin_port = htons(8080);
-                clientIPs.push_back(addr);
+        case 0x03: // Disconnect
+            running = false; // Stop threads
+            break;
+        case 0x04: // Update client list
+            clientIPs.clear();
+            const char* data = readBuff.data();
+            while (*data) {
+                sockaddr_in addr = {};
+                if (inet_pton(AF_INET, data, &addr.sin_addr) > 0) {
+                    addr.sin_family = AF_INET;
+                    addr.sin_port = htons(8080);
+                    clientIPs.push_back(addr);
+                }
+                data += strlen(data) + 1; // Move to the next string
             }
-            data += strlen(data) + 1; // Move to the next string
-        }
-        break;
-    }
-    case 0x05: // Update whiteboard
-        // To be implemented
-        break;
+            break;
+        case 0x05: // Update whiteboard
+            struct drawArgs args;
+            std::memcpy(&args, readBuff.data(), readBuff.size());
+            break;
     }
 }
 
