@@ -41,6 +41,7 @@ server::server() {
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(8080);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
+    clientIPs.push_back(serverAddr);
 
     if (bind(sock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
         std::cerr << "Bind failed. Error: " << WSAGetLastError() << "\n";

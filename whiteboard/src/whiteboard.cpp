@@ -134,12 +134,12 @@ void WhiteBoard::CursorPositionCallback(GLFWwindow* lWindow, double xpos, double
             startX = framebufferX;
             startY = framebufferY;
             isMousePressed = true;
-            std::cout << "Mouse pressed at: x  " << startX << ", y  " << startY << std::endl;
+            //std::cout << "Mouse pressed at: x  " << startX << ", y  " << startY << std::endl;
         }
         else if (!line) {
             // Draw as the mouse is pressed and dragged
             DrawSquare(framebufferX, framebufferY, framebufferX, framebufferY, brushSize, brushColor);
-            std::cout << "Mouse dragging: x  " << framebufferX << ", y  " << framebufferY << std::endl;
+            //std::cout << "Mouse dragging: x  " << framebufferX << ", y  " << framebufferY << std::endl;
         }
     }
 
@@ -149,7 +149,7 @@ void WhiteBoard::CursorPositionCallback(GLFWwindow* lWindow, double xpos, double
         endY = framebufferY;
         isMousePressed = false;
 
-        std::cout << "Mouse released at: x " << endX << ", y  " << endY << std::endl;
+        //std::cout << "Mouse released at: x " << endX << ", y  " << endY << std::endl;
 
         if (line) {
             // Example for drawing a line between start and end points
@@ -162,12 +162,12 @@ void WhiteBoard::CursorPositionCallback(GLFWwindow* lWindow, double xpos, double
 void WhiteBoard::MouseCallback(GLFWwindow* lWindow, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        std::cout << "Mouse left button is pressed." << std::endl;
+        //std::cout << "Mouse left button is pressed." << std::endl;
     }
     else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
         SetFrameBuffer();
         ClearMaskData();  // Clear the mask data when resetting
-        std::cout << "Mouse right button is pressed. Screen reset." << std::endl;
+        //std::cout << "Mouse right button is pressed. Screen reset." << std::endl;
     }
 }
 
@@ -190,7 +190,7 @@ void WhiteBoard::CharacterCallback(GLFWwindow* lWindow, unsigned int key)
             line = (line ? false : true);
         }
     }
-    std::cout << "Key " << (char)key << " is pressed." << std::endl;
+    //std::cout << "Key " << (char)key << " is pressed." << std::endl;
 }
 
 // Static wrapper for CursorPositionCallback

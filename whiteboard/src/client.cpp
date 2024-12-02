@@ -25,6 +25,7 @@ client::client(std::string serverIP, float frameBuffer[WINDOW_HEIGHT][WINDOW_WID
         std::cerr << "Invalid server IP address: " << serverIP << std::endl;
         running = false;
     }
+    clientIPs.push_back(serverAddr);
 
     sendPacket((uint8_t)1, {}, serverAddr); //initial connection packet
 }

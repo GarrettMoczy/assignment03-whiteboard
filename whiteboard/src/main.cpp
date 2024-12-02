@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <thread>
 #include "whiteboard.h"
 #include "menu.h"
 #include "server.h"
@@ -54,7 +55,7 @@ void Bind(Menu menu) {
 }
 
 int main() {
-    WhiteBoard* whiteboard;
+    server* whiteboard;
     Menu menu(window, frameBuffer, "../img/alt_menu_texture.png");
 
     Init();
@@ -67,13 +68,14 @@ int main() {
         glfwPollEvents();
     }
     
-    if (menu.server) {
+    //if (menu.server) {
         whiteboard = new server(frameBuffer, drawnBuffer, mask, window);
-    } else {
-        whiteboard = new client(menu.password, frameBuffer, drawnBuffer, mask, window);
-    }
+    //} else {
+    //    whiteboard = new client(menu.password, frameBuffer, drawnBuffer, mask, window);
+    //}
 
     Bind(*whiteboard);
+    std::thread receiveThread(&client::receive, whiteboard);
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         whiteboard->Display();
@@ -81,6 +83,7 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    receiveThread.join();
     glfwTerminate();
     return 0;
 }
