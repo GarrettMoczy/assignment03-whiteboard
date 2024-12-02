@@ -35,23 +35,6 @@ client::~client() {
     WSACleanup();
 }
 
-void client::send() {
-    //while (running) {
-    //    //initial connection packet
-    //    sendPacket((uint8_t)1, {}, serverAddr);
-    //    
-
-    //    if (input == "q") {
-    //        running = false;
-    //        sendPacket(0x03, {}, serverAddr); // Disconnect packet
-    //    }
-    //    else if (input == "whiteboard") {
-    //        std::vector<char> payload{ 'W', 'B', 'U', 'P', 'D' }; // Example payload
-    //        sendPacket(0x05, payload, serverAddr);
-    //    }
-    //}
-}
-
 void client::receive() {
     while (running) {
         std::fill(readBuff.begin(), readBuff.end(), 0); // Clear the buffer
@@ -66,50 +49,57 @@ void client::receive() {
     }
 }
 
-void client::DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc) override {
-    WhiteBoard::DrawSquare(xpos, ypos, xend, yend, size, lc);
-    struct drawArgs args;
-    args.xpos = xpos;
-    args.ypos = ypos;
-    args.xend = xend;
-    args.yend = yend;
-    args.size = size;
-    args.lc.r = lc.r;
-    args.lc.g = lc.g;
-    args.lc.b = lc.b;
-    std::vector<char> packet;
-    packet.resize(sizeof(struct drawArgs));
-    std::memcpy(packet.data(), &args, sizeof(struct drawArgs));
-    for (auto ip : clientIPs) {
-        sendPacket((uint8_t)5, packet, ip);
-    }
-    
-}
+//void client::DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc) {
+//    WhiteBoard::DrawSquare(xpos, ypos, xend, yend, size, lc);
+//    struct drawArgs args;
+//    args.xpos = xpos;
+//    args.ypos = ypos;
+//    args.xend = xend;
+//    args.yend = yend;
+//    args.size = size;
+//    args.lc.r = lc.r;
+//    args.lc.g = lc.g;
+//    args.lc.b = lc.b;
+//    std::vector<char> packet;
+//    packet.resize(sizeof(struct drawArgs));
+//    std::memcpy(packet.data(), &args, sizeof(struct drawArgs));
+//    for (auto ip : clientIPs) {
+//        sendPacket((uint8_t)5, packet, ip);
+//    }
+//    
+//}
 
 
 void client::handlePacket(uint8_t type) {
     switch (type) {
-        case 0x03: // Disconnect
-            running = false; // Stop threads
-            break;
-        case 0x04: // Update client list
-            clientIPs.clear();
-            const char* data = readBuff.data();
-            while (*data) {
-                sockaddr_in addr = {};
-                if (inet_pton(AF_INET, data, &addr.sin_addr) > 0) {
-                    addr.sin_family = AF_INET;
-                    addr.sin_port = htons(8080);
-                    clientIPs.push_back(addr);
-                }
-                data += strlen(data) + 1; // Move to the next string
+    case 0x03: // Disconnect
+        running = false; // Stop threads
+        break;
+
+    case 0x04: { // Update client list
+        clientIPs.clear();
+        const char* data = readBuff.data();  // Enclose in a block
+        while (*data) {
+            sockaddr_in addr = {};
+            if (inet_pton(AF_INET, data, &addr.sin_addr) > 0) {
+                addr.sin_family = AF_INET;
+                addr.sin_port = htons(8080);
+                clientIPs.push_back(addr);
             }
-            break;
-        case 0x05: // Update whiteboard
-            struct drawArgs args;
-            std::memcpy(&args, readBuff.data(), readBuff.size());
-            WhiteBoard::DrawSquare(args.xpos, args.ypos, args.xend, args.yend, args.size, args.lc);
-            break;
+            data += strlen(data) + 1; // Move to the next string
+        }
+        break;
+    }
+
+    case 0x05: // Update whiteboard
+        /*struct drawArgs args;
+        std::memcpy(&args, readBuff.data(), readBuff.size());
+        WhiteBoard::DrawSquare(args.xpos, args.ypos, args.xend, args.yend, args.size, args.lc);*/
+        break;
+
+    default:
+        std::cerr << "Unhandled packet type: " << static_cast<int>(type) << "\n";
+        break;
     }
 }
 
@@ -122,14 +112,3 @@ void client::sendPacket(unsigned int type, const std::vector<char>& payload, con
         std::cerr << "Failed to send packet to " << inet_ntoa(recipient.sin_addr) << ". Error: " << WSAGetLastError() << std::endl;
     }
 }
-
-
-//int main() {
-//	client c(127.0.0.1);
-//	std::thread sendThread(&client::send, &c);
-//	std::thread receiveThread(&client::receive, &c);
-//
-//	sendThread.join();
-//	receiveThread.join();
-//
-//}

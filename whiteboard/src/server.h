@@ -9,8 +9,9 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
-class server {
+class server : public WhiteBoard {
 public:
+    server();
     server(float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3],
         float drawnBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3],
         bool mask[WINDOW_HEIGHT][WINDOW_WIDTH],

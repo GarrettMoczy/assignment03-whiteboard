@@ -23,6 +23,35 @@ void Init(GLFWwindow* window) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
+server::server() {
+    // Initialize Winsock
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        std::cerr << "Winsock initialization failed. Error: " << WSAGetLastError() << "\n";
+        exit(1);
+    }
+
+    sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (sock == INVALID_SOCKET) {
+        std::cerr << "Socket creation failed. Error: " << WSAGetLastError() << "\n";
+        WSACleanup();
+        exit(1);
+    }
+
+    sockaddr_in serverAddr = {};
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(8080);
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+
+    if (bind(sock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
+        std::cerr << "Bind failed. Error: " << WSAGetLastError() << "\n";
+        closesocket(sock);
+        WSACleanup();
+        exit(1);
+    }
+
+    std::cout << "Server started on port 8080.\n";
+}
+
 
 void Bind(GLFWwindow* window, WhiteBoard& whiteboard) {
     glfwSetWindowUserPointer(window, &whiteboard);
