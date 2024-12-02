@@ -8,12 +8,14 @@
 #define CLAMP(in, low, high) ((in) < (low) ? (low) : ((in) > (high) ? (high) : in))
 #define WINDOW_WIDTH 900
 #define WINDOW_HEIGHT 600
+#pragma pack(push, 1)
+struct color { float r, g, b; };
+#pragma pack(pop)
 
 class WhiteBoard {
 
 	public:
 		WhiteBoard();
-		struct color { float r, g, b; };
 		WhiteBoard(float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], float drawnBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], bool mask[WINDOW_HEIGHT][WINDOW_WIDTH], GLFWwindow* window);
 		void SetFrameBufferPixel(int x, int y, struct color lc);
 		void SetDrawnBufferPixel(int x, int y, struct color lc);

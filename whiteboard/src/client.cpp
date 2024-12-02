@@ -49,30 +49,30 @@ void client::receive() {
     }
 }
 
-//void client::DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc) {
-//    WhiteBoard::DrawSquare(xpos, ypos, xend, yend, size, lc);
-//    struct drawArgs args;
-//    args.xpos = xpos;
-//    args.ypos = ypos;
-//    args.xend = xend;
-//    args.yend = yend;
-//    args.size = size;
-//    args.lc.r = lc.r;
-//    args.lc.g = lc.g;
-//    args.lc.b = lc.b;
-//    std::vector<char> packet;
-//    packet.resize(sizeof(struct drawArgs));
-//    std::memcpy(packet.data(), &args, sizeof(struct drawArgs));
-//    for (auto ip : clientIPs) {
-//        sendPacket((uint8_t)5, packet, ip);
-//    }
-//    
-//}
+void client::DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc) {
+    WhiteBoard::DrawSquare(xpos, ypos, xend, yend, size, lc);
+    struct drawArgs args;
+    args.xpos = xpos;
+    args.ypos = ypos;
+    args.xend = xend;
+    args.yend = yend;
+    args.size = size;
+    args.lc.r = lc.r;
+    args.lc.g = lc.g;
+    args.lc.b = lc.b;
+    std::vector<char> packet;
+    packet.resize(sizeof(struct drawArgs));
+    std::memcpy(packet.data(), &args, sizeof(struct drawArgs));
+    for (auto ip : clientIPs) {
+        sendPacket((uint8_t)5, packet, ip);
+    }
+    
+}
 
 
 void client::handlePacket(uint8_t type) {
     switch (type) {
-    case 0x03: // Disconnect
+    case 0x03: // Session End
         running = false; // Stop threads
         break;
 
@@ -92,9 +92,9 @@ void client::handlePacket(uint8_t type) {
     }
 
     case 0x05: // Update whiteboard
-        /*struct drawArgs args;
+        struct drawArgs args;
         std::memcpy(&args, readBuff.data(), readBuff.size());
-        WhiteBoard::DrawSquare(args.xpos, args.ypos, args.xend, args.yend, args.size, args.lc);*/
+        WhiteBoard::DrawSquare(args.xpos, args.ypos, args.xend, args.yend, args.size, args.lc);
         break;
 
     default:
