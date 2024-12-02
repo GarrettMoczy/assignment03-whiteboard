@@ -5,15 +5,11 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-
-
 #define CLAMP(in, low, high) ((in) < (low) ? (low) : ((in) > (high) ? (high) : in))
 #define WINDOW_WIDTH 900
 #define WINDOW_HEIGHT 600
 
 class WhiteBoard {
-
-	
 
 	public:
 		struct color { float r, g, b; };
@@ -24,7 +20,7 @@ class WhiteBoard {
 		void SetFrameBuffer();
 		void ClearMaskData();
 		void Display();
-		void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc);
+		virtual void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc);
 		void CursorPositionCallback(GLFWwindow* lWindow, double xpos, double ypos);
 		void MouseCallback(GLFWwindow* lWindow, int button, int action, int mods);
 		void CharacterCallback(GLFWwindow* lWindow, unsigned int key);
@@ -33,14 +29,14 @@ class WhiteBoard {
 		static void StaticCursorPositionCallback(GLFWwindow* lWindow, double xpos, double ypos);
 		static void StaticMouseCallback(GLFWwindow* lWindow, int button, int action, int mods);
 		static void StaticCharacterCallback(GLFWwindow* lWindow, unsigned int key);
-		
+
+	protected:
+		struct color { float r, g, b; };
 		void WhiteBoard::SetWindow(GLFWwindow* win) {window = win;  }
 		GLFWwindow* GetWindow() const { return window; }
 		bool (*GetMask())[WINDOW_WIDTH] { return mask; }
 		float (*GetDrawnBuffer())[WINDOW_WIDTH][3]{ return drawnBuffer; }
 
-	protected:
-		
 		bool line;
 		bool isMousePressed;
 		int startX, startY;

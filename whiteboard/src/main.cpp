@@ -46,30 +46,23 @@ void Bind(WhiteBoard& whiteboard) {
     whiteboard.SetFrameBuffer();
     whiteboard.ClearMaskData();
 }
+void Bind(Menu menu) {
+    glfwSetWindowUserPointer(window, &menu);
+    glfwSetCursorPosCallback(window, Menu::StaticCursorPositionCallback);
+    glfwSetCharCallback(window, Menu::StaticCharacterCallback);
+    glfwSetKeyCallback(window, Menu::StaticKeyCallback);
+}
 
 int main() {
-    Init();
-
     WhiteBoard whiteboard(frameBuffer, drawnBuffer, mask, window);
     Menu menu(window, frameBuffer, "../img/alt_menu_texture.png");
-
-
-    while (true) {
+    Init();
+    Bind(menu);
+    while (glfwWindowShouldClose(window) == 0)
+    {
         menu.Display();
         glfwSwapBuffers(window);
         glfwPollEvents();
-
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            std::cout << "Starting as server...\n";
-            server srv(frameBuffer, drawnBuffer, mask, window);
-            srv.Start(); 
-            break;
-        }
-        else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-            std::cout << "Exiting application...\n";
-            glfwTerminate();
-            return 0;
-        }
     }
     Bind(whiteboard);
     while (!glfwWindowShouldClose(window)) {
