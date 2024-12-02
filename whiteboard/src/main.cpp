@@ -5,9 +5,7 @@
 #include "whiteboard.h"
 
 #include "menu.h"
-#include "server.h"
-#include "client.h"
-=======
+
 
 #define WINDOW_WIDTH 900
 #define WINDOW_HEIGHT 600
@@ -39,14 +37,21 @@ void Bind(WhiteBoard whiteboard) {
     whiteboard.SetFrameBuffer();
     whiteboard.ClearMaskData();
 }
+void Bind(Menu menu) {
+    glfwSetWindowUserPointer(window, &menu);
+    glfwSetCursorPosCallback(window, Menu::StaticCursorPositionCallback);
+    glfwSetCharCallback(window, Menu::StaticCharacterCallback);
+    glfwSetKeyCallback(window, Menu::StaticKeyCallback);
+}
 
 int main()
 {
     WhiteBoard whiteboard(frameBuffer, drawnBuffer, mask, window);
     Menu menu(window, frameBuffer, "../img/alt_menu_texture.png");
+   
     Init();
-
-    while (true)
+    Bind(menu);
+    while (glfwWindowShouldClose(window) == 0)
     {
         menu.Display();
         glfwSwapBuffers(window);

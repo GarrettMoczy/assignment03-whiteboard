@@ -19,7 +19,13 @@ void Menu::SetFrameBufferPixel(int x, int y, struct color lc)
     frameBuffer[y][x][2] = lc.b;
 };
 
+bool Menu::hostPress(int xpos, int ypos) {
+    return (xpos <= 290 && xpos >= 250) && (ypos <= 540 && ypos >= 350);
 
+};
+bool Menu::joinPress(int xpos, int ypos) {
+    return (xpos <= 200 && xpos >= 160) && (ypos <= 540 && ypos >= 350);
+};
 void Menu::Display() {
 
     glDrawPixels(WINDOW_WIDTH, WINDOW_HEIGHT, GL_RGB, GL_FLOAT, frameBuffer);
@@ -47,4 +53,101 @@ void Menu::Display() {
     stbi_image_free(data);
 
 }
+void Menu::CharacterCallback(GLFWwindow* lWindow, unsigned int key)
+{
+    system("cls");  // Clear the console
 
+    // Check if the key is a number, dot, or semicolon
+    if ((key >= '0' && key <= '9') || key == '.' || key == ':') {
+        // Append the character to the password string
+        password.push_back(static_cast<char>(key));
+    }
+    // Check if the key is backspace
+    else if (key == GLFW_KEY_BACKSPACE) {
+        // Remove the last character from the password string, if it exists
+        if (!password.empty()) {
+            password.pop_back();
+        }
+    }
+
+    // Print the current password
+    printf("IP: %s\n", password.c_str());
+}
+
+void Menu::KeyCallback(GLFWwindow* lWindow, int key, int scancode, int action, int mods)
+{
+
+    // Handle the Backspace key (GLFW_KEY_BACKSPACE)
+    if (action == GLFW_PRESS && key == GLFW_KEY_BACKSPACE) {
+        system("cls");  // Clear the console
+        // Remove the last character from the password string, if it exists
+        if (!password.empty()) {
+            password.pop_back();
+        }
+
+        // Print the updated password
+        printf("IP: %s\n", password.c_str());
+    }
+}
+
+void Menu::CursorPositionCallback(GLFWwindow* lWindow, double xpos, double ypos)
+{
+    int framebufferX = WINDOW_HEIGHT - 1 - (int)ypos;  // Invert the new y-coordinate
+    int framebufferY = (int)xpos;                      // Swap x and y
+
+    int state = glfwGetMouseButton(lWindow, GLFW_MOUSE_BUTTON_LEFT);
+
+    static bool isMousePressed = false;
+    static int pressX, pressY;
+
+    if (state == GLFW_PRESS) {
+        if (!isMousePressed) {
+            // Store the position where the mouse was pressed
+            pressX = framebufferX;
+            pressY = framebufferY;
+            isMousePressed = true;
+        }
+    }
+    else if (state == GLFW_RELEASE) {
+        if (isMousePressed) {
+            // Check if the mouse was released at the same position
+            if (hostPress(framebufferX, framebufferY) && hostPress(pressX, pressY)) {
+            
+                // Call the function you want to trigger
+                
+            }
+            else if (joinPress(framebufferX, framebufferY) && joinPress(pressX, pressY)) {
+                // Call the function you want to trigger
+            }
+            isMousePressed = false;
+        }
+    }
+}
+
+
+
+
+// Static wrapper for CursorPositionCallback
+void Menu::StaticCursorPositionCallback(GLFWwindow* lWindow, double xpos, double ypos) {
+    Menu* menu = static_cast<Menu*>(glfwGetWindowUserPointer(lWindow));
+    if (menu) {
+        menu->CursorPositionCallback(lWindow, xpos, ypos);
+    }
+}
+
+
+// Static wrapper for KeyPositionCallback
+void Menu::StaticKeyCallback(GLFWwindow* lWindow, int key, int scancode, int action, int mods) {
+    Menu* menu = static_cast<Menu*>(glfwGetWindowUserPointer(lWindow));
+    if (menu) {
+        menu->KeyCallback(lWindow, key, scancode, action, mods);
+    }
+}
+
+// Static wrapper for CharacterCallback
+void Menu::StaticCharacterCallback(GLFWwindow* lWindow, unsigned int key) {
+    Menu* menu = static_cast<Menu*>(glfwGetWindowUserPointer(lWindow));
+    if (menu) {
+        menu->CharacterCallback(lWindow, key);
+    }
+}
