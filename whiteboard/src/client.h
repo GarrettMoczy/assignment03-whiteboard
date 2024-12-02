@@ -8,6 +8,12 @@
 #include "whiteboard.h"
 
 #pragma comment(lib, "ws2_32.lib") // Automatically link the Winsock library
+#pragma pack(push, 1)
+struct drawArgs {
+	int xpos, ypos, xend, yend, size;
+	struct color lc;
+};
+#pragma pack(pop)
 
 
 //custom equality operator for sockaddr_in
@@ -27,20 +33,12 @@ class client : public WhiteBoard {
 		void receive();
 		void handlePacket(uint8_t type);
 		//void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc);
-
+		void DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct color lc) override;
 
 		//void updateWhiteboard();
 
 	protected:
-#pragma pack(push, 1)
-		struct drawArgs {
-			int xpos, ypos, xend, yend, size;
-			struct color lc;
-		};
-		struct color {
-			float r, g, b;
-		};
-#pragma pack(pop)
+		
 		WSADATA wsaData;
 		SOCKET sock;
 
