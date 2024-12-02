@@ -120,7 +120,7 @@ void Menu::CursorPositionCallback(GLFWwindow* lWindow, double xpos, double ypos)
                 this->active = false;
             }
             else if (joinPress(framebufferX, framebufferY) && joinPress(pressX, pressY)) {
-                // Call the function you want to trigger
+                
                 printf("pressed: join\n");
                 this->active = false;
             }

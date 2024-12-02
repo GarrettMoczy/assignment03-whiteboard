@@ -29,13 +29,13 @@ void Init()
 
 }
 
-void Bind(WhiteBoard whiteboard) {
-    glfwSetWindowUserPointer(window, &whiteboard);
+void Bind(WhiteBoard* whiteboard) {
+    glfwSetWindowUserPointer(window, whiteboard);
     glfwSetMouseButtonCallback(window, WhiteBoard::StaticMouseCallback);
     glfwSetCursorPosCallback(window, WhiteBoard::StaticCursorPositionCallback);
     glfwSetCharCallback(window, WhiteBoard::StaticCharacterCallback);
-    whiteboard.SetFrameBuffer();
-    whiteboard.ClearMaskData();
+    whiteboard->SetFrameBuffer();
+    whiteboard->ClearMaskData();
 }
 void Bind(Menu menu) {
     glfwSetWindowUserPointer(window, &menu);
@@ -46,7 +46,7 @@ void Bind(Menu menu) {
 
 int main()
 {
-    WhiteBoard whiteboard(frameBuffer, drawnBuffer, mask, window);
+    WhiteBoard* whiteboard = new WhiteBoard(frameBuffer, drawnBuffer, mask, window);
     Menu menu(window, frameBuffer, "../img/alt_menu_texture.png");
     
     Init();
@@ -58,10 +58,11 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
     Bind(whiteboard);
     while (glfwWindowShouldClose(window) == 0) {
         glClear(GL_COLOR_BUFFER_BIT);
-        whiteboard.Display();
+        whiteboard->Display();
         glFlush();
         glfwSwapBuffers(window);
         glfwPollEvents();

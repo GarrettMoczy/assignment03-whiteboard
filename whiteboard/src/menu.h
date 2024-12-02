@@ -4,6 +4,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include <winsock2.h>
+#include <WS2tcpip.h>
+
+#pragma comment(lib, "WS2_32.lib")
 
 #define CLAMP(in, low, high) ((in) < (low) ? (low) : ((in) > (high) ? (high) : in))
 #define WINDOW_WIDTH 900
@@ -21,6 +25,7 @@ private:
     float(*frameBuffer)[WINDOW_WIDTH][3];
     void SetFrameBufferPixel(int x, int y, struct color lc);
     std::string password;
+    
 public:
     Menu(GLFWwindow* window, float frameBuffer[WINDOW_HEIGHT][WINDOW_WIDTH][3], const std::string& imagePath);
     void Display();
