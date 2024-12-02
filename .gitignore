@@ -1,0 +1,15 @@
+build/
+*.exe
+*.o
+*.obj
+.vs/
+Debug/
+Release/
+x64/
+.vscode/
+CMakeFiles/
+CMakeCache.txt
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
