@@ -1,6 +1,9 @@
 #include "client.h"
 #include <thread>
 
+client::client() {
+
+}
 client::client(std::string serverIP) : running(true), readBuff(1024, 0) {
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         std::cerr << "Winsock initialization failed. Error: " << WSAGetLastError() << std::endl;
@@ -30,6 +33,23 @@ client::~client() {
     running = false;
     closesocket(sock);
     WSACleanup();
+}
+
+void client::send() {
+    //while (running) {
+    //    //initial connection packet
+    //    sendPacket((uint8_t)1, {}, serverAddr);
+    //    
+
+    //    if (input == "q") {
+    //        running = false;
+    //        sendPacket(0x03, {}, serverAddr); // Disconnect packet
+    //    }
+    //    else if (input == "whiteboard") {
+    //        std::vector<char> payload{ 'W', 'B', 'U', 'P', 'D' }; // Example payload
+    //        sendPacket(0x05, payload, serverAddr);
+    //    }
+    //}
 }
 
 void client::receive() {
