@@ -31,6 +31,7 @@ client::client(std::string serverIP) : running(true), readBuff(1024, 0) {
 
 client::~client() {
     running = false;
+    sendPacket((uint8_t)2, {}, serverAddr);
     closesocket(sock);
     WSACleanup();
 }
@@ -89,10 +90,10 @@ void client::DrawSquare(int xpos, int ypos, int xend, int yend, int size, struct
 
 void client::handlePacket(uint8_t type) {
     switch (type) {
-        case 0x03: // Disconnect
+        case 0x03: // End session
             running = false; // Stop threads
             break;
-        case 0x04: // Update client list
+        case 0x04: {// Update client list
             clientIPs.clear();
             const char* data = readBuff.data();
             while (*data) {
@@ -105,11 +106,13 @@ void client::handlePacket(uint8_t type) {
                 data += strlen(data) + 1; // Move to the next string
             }
             break;
-        case 0x05: // Update whiteboard
+        }
+        case 0x05: {// Update whiteboard
             struct drawArgs args;
             std::memcpy(&args, readBuff.data(), readBuff.size());
             WhiteBoard::DrawSquare(args.xpos, args.ypos, args.xend, args.yend, args.size, args.lc);
             break;
+        }
     }
 }
 
